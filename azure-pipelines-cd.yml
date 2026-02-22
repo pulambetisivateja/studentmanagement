@@ -8,7 +8,8 @@ steps:
   - task: SSH@0
     displayName: "Create deployment folder on VM"
     inputs:
-      sshEndpoint: 'myVM-SSH'
+      sshEndpoint: 'Spring_Boot_app'
+      service_connect_name: 'Spring_Boot_app'
       runOptions: 'commands'
       commands: |
         mkdir -p /home/azureuser/myapp
@@ -18,7 +19,8 @@ steps:
   - task: CopyFilesOverSSH@0
     displayName: "Copy JAR to VM"
     inputs:
-      sshEndpoint: 'myVM-SSH'
+      sshEndpoint: 'Spring_Boot_app'
+      service_connect_name: 'Spring_Boot_app'
       sourceFolder: '$(System.DefaultWorkingDirectory)/target'
       contents: '**/*.jar'
       targetFolder: '/home/azureuser/myapp'
@@ -28,7 +30,8 @@ steps:
   - task: SSH@0
     displayName: "Run Spring Boot app in background"
     inputs:
-      sshEndpoint: 'myVM-SSH'
+      sshEndpoint: 'Spring_Boot_app'
+      service_connect_name: 'Spring_Boot_app'
       runOptions: 'commands'
       commands: |
         cd /home/azureuser/myapp
@@ -40,7 +43,8 @@ steps:
   - task: SSH@0
     displayName: "Tail app.log for last 20 lines"
     inputs:
-      sshEndpoint: 'myVM-SSH'
+      sshEndpoint: 'Spring_Boot_app'
+      service_connect_name: 'Spring_Boot_app'
       runOptions: 'commands'
       commands: |
         cd /home/azureuser/myapp
