@@ -1,15 +1,9 @@
 trigger:
-- master
+  - master
 
 pool:
   name: Default
 
 steps:
-- task: Maven@4
-  inputs:
-    mavenPomFile: 'pom.xml'
-    goals: 'clean package'
-    publishJUnitResults: false
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.21'
-    mavenVersionOption: 'Default'
+  - script: mvn clean package
+    displayName: 'Build using Maven'
