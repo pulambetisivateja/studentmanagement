@@ -30,7 +30,7 @@ steps:
   - task: SSH@0
     displayName: "Run Spring Boot app in background"
     inputs:
-      sshEndpoint: 'Spring_Boot_app'
+      sshEndpoint: 'Spring_Boot_app1'
       service_connect_name: 'Spring_Boot_app'
       runOptions: 'commands'
       commands: |
@@ -44,7 +44,7 @@ steps:
     displayName: "Tail app.log for last 20 lines"
     inputs:
       sshEndpoint: 'Spring_Boot_app'
-      service_connect_name: 'Spring_Boot_app'
+      service_connect_name: 'Spring_Boot_app1'
       runOptions: 'commands'
       commands: |
         cd /home/azureuser/myapp
