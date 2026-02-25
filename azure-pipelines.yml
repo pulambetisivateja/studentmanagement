@@ -1,12 +1,12 @@
 trigger:
-  - main   # change branch if needed
+  - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: azure-vm-pool   # Self-hosted agent pool
 
 variables:
   jarName: 'studentmanagement-0.0.1-SNAPSHOT.jar'
-  remotePath: '/home/azureuser/app'   # change if needed
+  appPath: '/home/azureuser/app'
 
 steps:
 
@@ -19,36 +19,30 @@ steps:
     displayName: 'Build Spring Boot JAR'
 
   # ===============================
-  # STEP 2 - Copy JAR to Azure VM
+  # STEP 2 - Prepare Deploy Folder
   # ===============================
-  - task: CopyFilesOverSSH@0
-    inputs:
-      sshEndpoint: 'AzureVM-SSH'     # Your SSH service connection name
-      sourceFolder: '$(System.DefaultWorkingDirectory)/target'
-      contents: '$(jarName)'
-      targetFolder: '$(remotePath)'
-      cleanTargetFolder: false
-    displayName: 'Copy JAR to Azure VM'
+  - script: |
+      mkdir -p $(appPath)
+    displayName: 'Create Deploy Folder'
 
   # ===============================
-  # STEP 3 - Stop Old App (if running)
+  # STEP 3 - Stop Old Application
   # ===============================
-  - task: SSH@0
-    inputs:
-      sshEndpoint: 'AzureVM-SSH'
-      runOptions: 'commands'
-      commands: |
-        pkill -f $(jarName) || true
+  - script: |
+      pkill -f $(jarName) || true
     displayName: 'Stop Old Application'
 
   # ===============================
-  # STEP 4 - Start Application
+  # STEP 4 - Deploy New JAR
   # ===============================
-  - task: SSH@0
-    inputs:
-      sshEndpoint: 'AzureVM-SSH'
-      runOptions: 'commands'
-      commands: |
-        cd $(remotePath)
-        nohup java -jar $(jarName) > app.log 2>&1 &
+  - script: |
+      cp target/$(jarName) $(appPath)/
+    displayName: 'Copy JAR to Deploy Folder'
+
+  # ===============================
+  # STEP 5 - Start Application
+  # ===============================
+  - script: |
+      cd $(appPath)
+      nohup java -jar $(jarName) > app.log 2>&1 &
     displayName: 'Start Application'
