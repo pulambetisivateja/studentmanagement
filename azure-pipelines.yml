@@ -44,5 +44,10 @@ steps:
   # ===============================
   - script: |
       cd $(appPath)
+      echo "Starting Spring Boot application..."
       nohup java -jar $(jarName) > app.log 2>&1 &
-    displayName: 'Start Application'
+      sleep 10
+      echo "Checking if app is running..."
+      ps -ef | grep $(jarName) || true
+      curl http://localhost:8080 || true
+    displayName: 'Start Application & Verify'
