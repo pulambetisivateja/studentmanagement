@@ -1,5 +1,5 @@
 trigger:
-  - main
+  - master
 
 pool:
   name: azure-vm-pool   # Self-hosted agent pool
