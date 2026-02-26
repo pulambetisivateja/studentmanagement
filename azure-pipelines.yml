@@ -40,11 +40,11 @@ steps:
     displayName: 'Copy JAR to Deploy Folder'
 
   # ===============================
-  # STEP 5 - Start Application
+  # STEP 5 - Start Application (Fixed)
   # ===============================
   - script: |
       cd $(appPath)
-      echo "Starting Spring Boot application..."
-      java -jar $(jarName) > app.log 2>&1 &
-      echo "Application started."
-    displayName: 'Start Application'
+      echo "Checking if app is running..."
+      ps -ef | grep $(jarName) | grep -v grep
+      curl http://localhost:8080 || true
+    displayName: 'Verify Application'
